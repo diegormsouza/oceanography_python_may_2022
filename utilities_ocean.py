@@ -216,7 +216,7 @@ def download_OCEAN(product, date, path_dest):
   #-----------------------------------------------------------------------------------------------------------
 
   # End the time counter
-  print('\nTotal Processing Time:', round((t.time() - start_time),2), 'seconds.') 
+  print('\nTotal Download Time:', round((t.time() - start_time),2), 'seconds.') 
 
   # Return the file name
   return f'{file_name}'
