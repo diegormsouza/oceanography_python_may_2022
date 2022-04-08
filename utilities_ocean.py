@@ -190,3 +190,34 @@ def download_OCEAN(product, date, path_dest):
       naming_convention = 'j3'
       extension = '.nc'
       file_name = naming_convention + '_' + year + month + day + extension
+
+  #-----------------------------------------------------------------------------------------------------------
+
+  # Enter the FTP Path
+  ftp.cwd(path)
+
+  # Download the file
+  print('\n---------------------')
+  print('Downloading FTP File:') 
+  print('---------------------')
+  print('Product: ' + product)
+  print('Date: ' + year + month + day)
+  print('File Name: ' + file_name)
+
+  try:
+    # Download the file
+    ftp.retrbinary("RETR " + file_name, open(dir + '//' + file_name, 'wb').write)  
+  except:
+    print("\nFile not available!")
+
+  # Quit the FPT connection
+  ftp.quit()
+
+  #-----------------------------------------------------------------------------------------------------------
+
+  # End the time counter
+  print('\nTotal Processing Time:', round((t.time() - start_time),2), 'seconds.') 
+
+  # Return the file name
+  return f'{file_name}'
+#-----------------------------------------------------------------------------------------------------------
