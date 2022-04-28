@@ -19,8 +19,26 @@ def download_OCEAN(product, date, path_dest):
 
   # SEA SURFACE TEMPERATURE:
   # SST         (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/sst
+  # SST Monthly - min / mean / max (Global - 5 km)          : ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly
+  # SST Annual - min / mean / max (Global - 5 km)          : ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual
+
+  # SEA SURFACE TEMPERATURE ANOMALY:
   # SST-Anomaly (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/ssta
+  # SST-Anomaly Monthly - - min / mean / max (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly
+  # SST-Anomaly Annual - - min / mean / max (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual
+
+  # SEA SURFACE TEMPERATURE - 7 DAY TREND:
   # SST-Trend   (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/sst-trend-7d
+
+  # BLEACHING ALERT AREA:
+  # BAA (Global - 5 km)              : ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/baa
+  # BAA Monthly - max (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly
+  # BAA Annual - max (Global - 5 km) : ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual
+
+  # CORAL BLEACHING HOTSPOT:
+  # BHS (Global - 5 km)              : ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/hs
+  # BHS Monthly - max (Global - 5 km): ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly
+  # BHS Annual - max (Global - 5 km) : ftp.star.nesdis.noaa.gov/pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual
 
   # OCEAN COLOR:
   # OC [filled] (Global - 9 km): ftp.star.nesdis.noaa.gov/pub/socd1/mecb/coastwatch/viirs/nrt/L3/global/chlora/dineof
@@ -71,7 +89,13 @@ def download_OCEAN(product, date, path_dest):
   #-----------------------------------------------------------------------------------------------------------
 
   # FTP Address
-  if (product == 'SST' or product == 'SST-A' or product == 'SST-T' or product == 'CLO'):
+  if (product == 'SST' or product == 'SST-A' or product == 'SST-T' or product == 'BAA' or 
+      product == 'BHS' or product == 'CLO' or product == 'SST-Monthly-Min' or product == 'SST-Monthly-Mean' or 
+      product == 'SST-Monthly-Max' or product == 'SST-Annual-Min' or product == 'SST-Annual-Mean' or 
+      product == 'SST-Annual-Max' or product == 'SST-A-Monthly-Min' or product == 'SST-A-Monthly-Mean' or 
+      product == 'SST-A-Monthly-Max' or product == 'SST-A-Annual-Min' or product == 'SST-A-Annual-Mean' or 
+      product == 'SST-A-Annual-Max' or product == 'BAA-Monthly-Max' or product == 'BHA-Annual-Max' or
+      product == 'BHS-Monthly-Max' or product == 'BHS-Annual-Max'):
     ftp = FTP('ftp.star.nesdis.noaa.gov') 
   elif (product == 'ASC-A-a' or 'ASC-A-d' or 'ASC-B-a' or 'ASC-B-d' or product == 'SLA' or product == 'JAS'):
     ftp = FTP('ftpcoastwatch.noaa.gov') 
@@ -89,6 +113,48 @@ def download_OCEAN(product, date, path_dest):
       extension = '.nc'
       file_name = naming_convention + '_' + year + month + day + extension
 
+  elif (product == 'SST-Monthly-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_sst-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'SST-Monthly-Mean'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_sst-mean_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'SST-Monthly-Min'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_sst-min_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'SST-Annual-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_sst-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
+  elif (product == 'SST-Annual-Mean'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_sst-mean_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
+  elif (product == 'SST-Annual-Min'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_sst-min_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
   elif (product == 'SST-A'):
       # FTP Path
       path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/ssta/' + year + '/')
@@ -96,12 +162,96 @@ def download_OCEAN(product, date, path_dest):
       extension = '.nc'
       file_name = naming_convention + '_' + year + month + day + extension
 
+  elif (product == 'SST-A-Monthly-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_ssta-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'SST-A-Monthly-Mean'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_ssta-mean_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'SST-A-Monthly-Min'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_ssta-min_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'SST-A-Annual-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_ssta-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
+  elif (product == 'SST-A-Annual-Mean'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_ssta-mean_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
+  elif (product == 'SST-A-Annual-Min'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_ssta-min_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
   elif (product == 'SST-T'):
       # FTP Path
       path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/sst-trend-7d/' + year + '/')
       naming_convention = 'ct5km_sst-trend-7d_v3.1'
       extension = '.nc'
       file_name = naming_convention + '_' + year + month + day + extension
+
+  elif (product == 'BAA'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/baa/' + year + '/')
+      naming_convention = 'ct5km_baa_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + day + extension
+
+  elif (product == 'BAA-Monthly-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_baa-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'BAA-Annual-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_baa-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
+
+  elif (product == 'BHS'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/hs/' + year + '/')
+      naming_convention = 'ct5km_hs_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + day + extension
+
+  elif (product == 'BHS-Monthly-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
+      naming_convention = 'ct5km_hs-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + month + extension
+
+  elif (product == 'BHS-Annual-Max'):
+      # FTP Path
+      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
+      naming_convention = 'ct5km_hs-max_v3.1'
+      extension = '.nc'
+      file_name = naming_convention + '_' + year + extension
 
   elif (product == 'CLO'):
       # Converting date to julian day
@@ -118,7 +268,6 @@ def download_OCEAN(product, date, path_dest):
       file_name = 'V' + year + jday + naming_convention + extension
 
   elif (product == 'SLA'):
-      from datetime import datetime, timedelta # Basic Dates and time types
       # FTP Path
       path = ('pub/socd/lsa/rads/sla/daily/nrt/' + year + '/')
       naming_convention = 'rads_global_nrt_sla'
