@@ -268,27 +268,6 @@ def download_OCEAN(product, date, path_dest):
       extension = '.nc'
       file_name = naming_convention + '_' + year + extension
 
-  elif (product == 'DHW'):
-      # FTP Path
-      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/dhw/' + year + '/')
-      naming_convention = 'ct5km_dhw_v3.1'
-      extension = '.nc'
-      file_name = naming_convention + '_' + year + month + day + extension
-
-  elif (product == 'DHW-Monthly-Max'):
-      # FTP Path
-      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/monthly/' + year + '/')
-      naming_convention = 'ct5km_dhw-max_v3.1'
-      extension = '.nc'
-      file_name = naming_convention + '_' + year + month + extension
-
-  elif (product == 'DHW-Annual-Max'):
-      # FTP Path
-      path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/annual/')
-      naming_convention = 'ct5km_dwh-max_v3.1'
-      extension = '.nc'
-      file_name = naming_convention + '_' + year + extension
-
   elif (product == 'CLO'):
       # Converting date to julian day
       import datetime
