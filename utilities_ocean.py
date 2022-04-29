@@ -120,6 +120,8 @@ def download_OCEAN(product, date, path_dest):
 
   #-----------------------------------------------------------------------------------------------------------
 
+  path = 'test'
+  
   # Access the FTP folder, based on the desired product
   if (product == 'SST'):
       # FTP Path
