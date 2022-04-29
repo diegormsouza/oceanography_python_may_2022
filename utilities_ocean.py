@@ -288,7 +288,7 @@ def download_OCEAN(product, date, path_dest):
       naming_convention = 'ct5km_dwh-max_v3.1'
       extension = '.nc'
       file_name = naming_convention + '_' + year + extension
-    
+
   elif (product == 'CLO'):
       # Converting date to julian day
       import datetime
