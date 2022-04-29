@@ -120,8 +120,6 @@ def download_OCEAN(product, date, path_dest):
 
   #-----------------------------------------------------------------------------------------------------------
 
-  print(product)
-  
   # Access the FTP folder, based on the desired product
   if (product == 'SST'):
       # FTP Path
@@ -271,7 +269,6 @@ def download_OCEAN(product, date, path_dest):
       file_name = naming_convention + '_' + year + extension
 
   elif (product == 'DHW'):
-      print("ESTOU AQUI NO DHW")
       # FTP Path
       path = ('pub/socd/mecb/crw/data/5km/v3.1_op/nc/v1.0/daily/dhw/' + year + '/')
       naming_convention = 'ct5km_dhw_v3.1'
@@ -381,7 +378,6 @@ def download_OCEAN(product, date, path_dest):
 
 #-----------------------------------------------------------------------------------------------------------
   
-  print(path)
   # Enter the FTP Path
   ftp.cwd(path)
 
