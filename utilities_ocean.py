@@ -308,6 +308,7 @@ def download_OCEAN(product, date, path_dest):
       path = ('pub/socd/lsa/rads/sla/daily/nrt/' + year + '/')
       naming_convention = 'rads_global_nrt_sla'
       extension = '.nc'
+      import datetime
       date_1 = year + month + day
       date_2 = str(datetime(int(year), int(month), int(day)) + timedelta(days=1))
       date_2 = datetime.strptime(date_2, '%Y-%m-%d %H:%M:%S').strftime('%Y%m%d')   
