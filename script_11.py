@@ -28,7 +28,6 @@ month_end = 5
 month_int = 1
 
 for month in range(month_ini, month_end + 1, month_int):
-
   # Time / Date for download
   month = str(month).zfill(2)
   date = year + month # YYYYMM
@@ -111,19 +110,10 @@ for month in range(month_ini, month_end + 1, month_int):
   from matplotlib.offsetbox import AnchoredText
   text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
   ax.add_artist(text)
-
   #--------------------------------------------------------------------------------------------------------------------------- 
   # Save the image
   plt.savefig(f'{output}/SSTAVG_{date}.png', bbox_inches='tight', pad_inches=0, dpi=100)
-
-  # Show the image
-  #plt.show()
-
 #---------------------------------------------------------------------------------------------------------------------------
-# INPE / CGCT / DISSM - Training: Oceanography Products - Script 11.2: Creating an Animation
-# Author: Diego Souza (INPE / CGCT / DISSM)
-#---------------------------------------------------------------------------------------------------------------------------
-
 import imageio        # Python interface to read and write a wide range of image data
 import glob           # Unix style pathname pattern expansion
 import os             # Miscellaneous operating system interfaces

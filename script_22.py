@@ -30,7 +30,6 @@ file = download_OCEAN('ASC-B-a-nc', date, input)
 # Open the file using the NetCDF4 library
 file = Dataset(f'{input}/{file}')
 #---------------------------------------------------------------------------------------------------------------------------
-     
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 extent = [-93.0, -60.00, -25.00, 18.00] # South America
 #extent = [-70.0, -60.00, -30.00, -10.00] # Brazilian Southeast
@@ -59,9 +58,7 @@ v_wind = file.variables['v_wind'][ 0 , 0 , latui:latli , lonli:lonui ]
 
 # Extract the wind speed
 wspeed = file.variables['windspeed'][ 0 , 0 , latui:latli , lonli:lonui ]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(8,8))
 
@@ -127,7 +124,6 @@ plt.title('Region: ' + str(extent), fontsize=7, loc='right')
 from matplotlib.offsetbox import AnchoredText
 text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
 ax.add_artist(text)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig('Output/image_22.png')

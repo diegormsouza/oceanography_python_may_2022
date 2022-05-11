@@ -112,7 +112,6 @@ for month in range(month_ini, month_end + 1, month_int):
   dates.append(date_formatted)
   #---------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Choose the plot size (width x height, in inches)
 fig, ax = plt.subplots(figsize=(16, 8))
 
@@ -141,9 +140,7 @@ plt.legend()
 # Add grids
 plt.grid(axis='x', color='0.95')
 plt.grid(axis='y', color='0.95')
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Save the figure
 plt.savefig('Output/image_13.png', bbox_inches='tight', pad_inches=0, dpi=300)
 

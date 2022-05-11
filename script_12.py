@@ -20,7 +20,6 @@ from utilities_ocean import download_OCEAN # Our function for download
 # Input and output directories
 input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Time / Date for download
 date1 = '202202' # YYYYMM
@@ -118,7 +117,6 @@ plt.title('Region: ' + str(extent), fontsize=6, loc='right')
 from matplotlib.offsetbox import AnchoredText
 text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
 ax.add_artist(text)
-
 #--------------------------------------------------------------------------------------------------------------------------- 
 # Save the image
 plt.savefig('Output/image_12.png')

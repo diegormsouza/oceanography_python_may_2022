@@ -30,7 +30,6 @@ file = download_OCEAN('SLA', date, input)
 # Open the file using the NetCDF4 library
 file = Dataset(f'{input}/{file}')
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 #extent = [-93.0, -60.00, -25.00, 18.00] # South America
 extent = [-65.0, -45.00, -42.00, -24.00] # Southeast Coast
@@ -57,9 +56,7 @@ lons = file.variables['longitude'][ lonli:lonui ]
 # Extract the Absolute Geostrophic Velocity (azonal and meridian)
 u_geo = file.variables['ugos'][ 0 , latli:latui , lonli:lonui ]
 v_geo = file.variables['vgos'][ 0 , latli:latui , lonli:lonui ]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(9,9))
 
@@ -114,9 +111,7 @@ plt.title('Region: ' + str(extent), fontsize=7, loc='right')
 from matplotlib.offsetbox import AnchoredText
 text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
 ax.add_artist(text)
-
 ax.set_facecolor('xkcd:black')
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig('Output/image_15.png')

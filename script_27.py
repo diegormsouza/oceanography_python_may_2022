@@ -19,9 +19,7 @@ from utilities_ocean import download_OCEAN # Our function for download
 #---------------------------------------------------------------------------------------------------------------------------
 
 def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
-
   # Reading the data from a buoy
-
   # Desired year (four digit)
   year = year
   # Desired month (two digit)
@@ -110,7 +108,6 @@ def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
   plt.annotate(text, xy=(int(lon_point + txt_offset_x), int(lat_point + txt_offset_y)), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
 
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Input and output directories
 input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
@@ -120,14 +117,10 @@ date = '20220409' # YYYYMMDD
 
 # Download the file (product, date, directory)
 file = download_OCEAN('SST', date, input)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Open the file using the NetCDF4 library
 file = Dataset(f'{input}/{file}')
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 extent = [-93.0, -60.00, 20.00, 30.00] # South Atlantic
        
@@ -145,9 +138,7 @@ lonui = np.argmin( np.abs( lons - extent[2] ) )
  
 # Extract the Sea Surface Temperature
 data = file.variables['analysed_sst'][ 0 , latli:latui , lonli:lonui ]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(13,10))
 
@@ -219,9 +210,7 @@ txt8 = ax.annotate("G", xy=(-36, -2), xycoords=ccrs.PlateCarree()._as_mpl_transf
 txt9 = ax.annotate("H", xy=(-46, 2), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), color='black', size=10, clip_on=True, annotation_clip=True, horizontalalignment='center', verticalalignment='center', transform=ccrs.PlateCarree())
 txt10 = ax.annotate("N", xy=(-22, -13), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), color='black', size=10, clip_on=True, annotation_clip=True, horizontalalignment='center', verticalalignment='center', transform=ccrs.PlateCarree())
 txt11 = ax.annotate("S", xy=(-22, -17), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), color='black', size=10, clip_on=True, annotation_clip=True, horizontalalignment='center', verticalalignment='center', transform=ccrs.PlateCarree())
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Get the same date from the satellite data
 year = date[0:4]
 month = date[4:6]
@@ -246,9 +235,7 @@ plot_PIRATA('B5s10w',  -5, -10, year, month, day)
 plot_PIRATA('B6s10w',  -6, -10, year, month, day)
 plot_PIRATA('B10s10w',-10, -10, year, month, day)
 plot_PIRATA('B0n0e',    0,   0, year, month, day)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Save the image
 plt.savefig('Output/image_27.png')
 

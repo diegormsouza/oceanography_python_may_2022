@@ -28,13 +28,10 @@ date = '20220409' # YYYYMMDD
 # Download the file (product, date, directory)
 file = download_OCEAN('ASC-B-a-hdf', date, input)
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Open the file using the PyHDF library
 file = f'{input}/{file}'
 hdf = SD(file, SDC.READ)
-
 #---------------------------------------------------------------------------------------------------------------------------    
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 extent = [-93.0, -60.00, -25.00, 18.00] # South America
 
@@ -76,7 +73,6 @@ wspeed = sds_obj.get()
 wspeed = wspeed[ latli:latui , lonli:lonui ].astype(float)  
 wspeed[wspeed == -9999] = np.nan
 wspeed = wspeed * 0.01
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(8,8))
@@ -167,7 +163,6 @@ plt.title('Region: ' + str(extent), fontsize=7, loc='right')
 from matplotlib.offsetbox import AnchoredText
 text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
 ax.add_artist(text)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig('Output/image_22b.png')

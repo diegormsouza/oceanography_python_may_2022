@@ -1,22 +1,53 @@
 #---------------------------------------------------------------------------------------------------------------------------
-# INPE / CGCT / DISSM - Training: Oceanography Products - Script 29: GOES-16 Level 2 Products (SST) and Average
+# INPE / CGCT / DISSM - Training: Oceanography Products - Script 30: Comparing LEO and GEO products
 # Author: Diego Souza (INPE / CGCT / DISSM)
 #---------------------------------------------------------------------------------------------------------------------------
 # Required modules
-from netCDF4 import Dataset                     # Read / Write NetCDF4 files
-import matplotlib.pyplot as plt                 # Plotting library
-from datetime import datetime                   # Basic Dates and time types
+from netCDF4 import Dataset                # Read / Write NetCDF4 files
+import matplotlib.pyplot as plt            # Plotting library
+from datetime import datetime, timedelta   # Library to convert julian day to dd-mm-yyyy
 import cartopy, cartopy.crs as ccrs        # Plot maps
 import cartopy.feature as cfeature         # Common drawing and filtering operations
 import cartopy.io.shapereader as shpreader # Import shapefiles
-import os                                       # Miscellaneous operating system interfaces
-from osgeo import gdal                          # Python bindings for GDAL
-import numpy as np                              # Scientific computing with Python
-import matplotlib.colors                        # Matplotlib colors  
-from utilities_goes import download_PROD        # Our function for download
-from utilities_goes import reproject            # Our function for reproject
-gdal.PushErrorHandler('CPLQuietErrorHandler')   # Ignore GDAL warnings
-#-----------------------------------------------------------------------------------------------------------
+import numpy as np                         # Import the Numpy package
+import matplotlib.colors                   # Matplotlib colors  
+from datetime import datetime, timedelta   # Basic Dates and time types
+import os                                  # Miscellaneous operating system interfaces
+import time as t                           # Time access and conversion                                          
+from ftplib import FTP                     # FTP protocol client
+from utilities_ocean import download_OCEAN # Our function for download
+#---------------------------------------------------------------------------------------------------------------------------
+# Input and output directories
+input = "Samples"; os.makedirs(input, exist_ok=True)
+output = "Output"; os.makedirs(output, exist_ok=True)
+
+# Time / Date for download
+date = '20220101' # YYYYMMDD
+
+# Download the file (product, date, directory)
+file_leo = download_OCEAN('SST-LEO', date, input)
+#---------------------------------------------------------------------------------------------------------------------------
+# Open the file using the NetCDF4 library
+file_leo = Dataset(f'{input}/{file_leo}')
+#---------------------------------------------------------------------------------------------------------------------------
+# Select the extent [min. lon, min. lat, max. lon, max. lat]
+extent = [-93.0, -60.00, -25.00, 18.00] # South America
+       
+# Reading lats and lons 
+lats = file_leo.variables['lat'][:]
+lons = file_leo.variables['lon'][:]
+
+# Latitude lower and upper index
+latli = np.argmin( np.abs( lats - extent[1] ) )
+latui = np.argmin( np.abs( lats - extent[3] ) )
+ 
+# Longitude lower and upper index
+lonli = np.argmin( np.abs( lons - extent[0] ) )
+lonui = np.argmin( np.abs( lons - extent[2] ) )
+ 
+# Extract the Sea Surface Temperature
+data_leo = file_leo.variables['sea_surface_temperature'][ 0 , latui:latli , lonli:lonui ] - 273.15
+#---------------------------------------------------------------------------------------------------------------------------
 # Input and output directories
 input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
@@ -32,14 +63,10 @@ extent = [-93.0, -60.00, -25.00, 18.00] # Min lon, Max lon, Min lat, Max lat
 # Sea Surface Temperature - "X" Hours
 ########################################################################
 
-hour_ini = 0
-hour_end = 23
-hour_int = 1
-
 sum_ds = np.zeros((5424,5424))
 count_ds = np.zeros((5424,5424))
 #-----------------------------------------------------------------------------------------------------------
-for hour in np.arange(hour_ini, hour_end+1, hour_int):
+for hour in np.arange(14,19+1,1):
 
     # Date structure
     yyyymmddhhmn = f'{yyyymmdd}{hour:02.0f}00'
@@ -96,62 +123,36 @@ file = Dataset(filename_ds)
 # Get the pixel values
 data_geo = file.variables['Band1'][:]
 #-----------------------------------------------------------------------------------------------------------
+# Resize the array
+from skimage.transform import resize
+data_geo = resize(data_geo, (data_leo.shape[0], data_leo.shape[1]))
+
+# Calculate the difference
+data_diff = data_leo - data_geo
+#---------------------------------------------------------------------------------------------------------------------------
 # Choose the plot size (width x height, in inches)
-plt.figure(figsize=(9,9))
+fig, ax = plt.subplots(figsize=(16, 8))
 
-# Use the Cilindrical Equidistant projection in cartopy
-ax = plt.axes(projection=ccrs.PlateCarree())
-ax.set_extent([extent[0], extent[2], extent[1], extent[3]], ccrs.PlateCarree())
+# Plot title
+plt.title('Comparação: GEO e LEO', fontsize=12, fontweight='bold')
 
-# Define the image extent
-img_extent = [extent[0], extent[2], extent[1], extent[3]]
+# X axis limits and label
+plt.xlim(-2, 2)
+plt.xlabel("Diferença (°C)",  fontsize=12, fontweight='bold')
 
-# Add coastlines, borders and gridlines
-ax.coastlines(resolution='50m', color='black', linewidth=0.8)
-ax.add_feature(cartopy.feature.BORDERS, edgecolor='black', linewidth=0.5)
-gl = ax.gridlines(crs=ccrs.PlateCarree(), color='white', alpha=1.0, linestyle='--', linewidth=0.25, xlocs=np.arange(-180, 180, 10), ylocs=np.arange(-90, 90, 10), draw_labels=True)
-gl.top_labels = False
-gl.right_labels = False
+# Y axis limits and label
+plt.ylim(0, 1000)
+plt.ylabel("Pixels",  fontsize=12, fontweight='bold')
 
-# Create a custom color scale:
-colors = ["#2d001c", "#5b0351", "#780777", "#480a5e", "#1e1552", 
-          "#1f337d", "#214c9f", "#2776c6", "#2fa5f1", "#1bad1d", 
-          "#8ad900", "#ffec00", "#ffab00", "#f46300", "#de3b00", 
-          "#ab1900", "#6b0200", '#3c0000']
-cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
-cmap.set_over('#3c0000')
-cmap.set_under('#28000a')
-vmin = -2.0
-vmax = 35.0
+# Add grids
+plt.grid(axis='x', color='0.95')
+plt.grid(axis='y', color='0.95')
 
-# Add a background image
-ax.stock_img()
-
-# Plot the image
-img = ax.imshow(data_geo, vmin=vmin, vmax=vmax, origin='upper', extent=img_extent, cmap=cmap)
-   
-# Add a shapefile
-shapefile = list(shpreader.Reader('ne_10m_admin_1_states_provinces.shp').geometries())
-ax.add_geometries(shapefile, ccrs.PlateCarree(), edgecolor='gray',facecolor='none', linewidth=0.3)
-
-# Add a colorbar
-plt.colorbar(img, label='Sea Surface Temperature (°C)', extend='both', orientation='vertical', pad=0.02, fraction=0.05)
-
-# Extract date
-date = (datetime.strptime(dtime, '%Y-%m-%dT%H:%M:%S.%fZ'))
-date_formatted = date.strftime('%Y-%m-%d %H:%M')
-
-# Add a title
-plt.title(f'GOES-16 SST {date_formatted} UTC', fontweight='bold', fontsize=7, loc='left')
-plt.title('Reg.: ' + str(extent) , fontsize=7, loc='right')
-
-# Add a text inside the plot
-from matplotlib.offsetbox import AnchoredText
-text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
-ax.add_artist(text)
-#--------------------------------------------------------------------------------------------------------------------------- 
+# Show the histogram
+plt.hist(data_diff[:], facecolor='blue')
+#-----------------------------------------------------------------------------------------------------------
 # Save the image
-plt.savefig('Output/image_29.png')
+plt.savefig('Output/image_30.png')
 
 # Show the image
 plt.show()

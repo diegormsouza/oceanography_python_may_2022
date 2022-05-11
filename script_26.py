@@ -17,7 +17,6 @@ import time as t                           # Time access and conversion
 from ftplib import FTP                     # FTP protocol client
 from utilities_ocean import download_OCEAN # Our function for download      
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Input and output directories
 input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
@@ -27,14 +26,10 @@ date = '20220409' # YYYYMMDD
 
 # Download the file (product, date, directory)
 file = download_OCEAN('SST', date, input)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Open the file using the NetCDF4 library
 file = Dataset(f'{input}/{file}')
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 extent = [-93.0, -60.00, 20.00, 30.00] # South Atlantic
        
@@ -52,9 +47,7 @@ lonui = np.argmin( np.abs( lons - extent[2] ) )
  
 # Extract the Sea Surface Temperature
 data = file.variables['analysed_sst'][ 0 , latli:latui , lonli:lonui ]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(13,10))
 
@@ -126,37 +119,28 @@ txt8 = ax.annotate("G", xy=(-36, -2), xycoords=ccrs.PlateCarree()._as_mpl_transf
 txt9 = ax.annotate("H", xy=(-46, 2), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), color='black', size=10, clip_on=True, annotation_clip=True, horizontalalignment='center', verticalalignment='center', transform=ccrs.PlateCarree())
 txt10 = ax.annotate("N", xy=(-22, -13), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), color='black', size=10, clip_on=True, annotation_clip=True, horizontalalignment='center', verticalalignment='center', transform=ccrs.PlateCarree())
 txt11 = ax.annotate("S", xy=(-22, -17), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), color='black', size=10, clip_on=True, annotation_clip=True, horizontalalignment='center', verticalalignment='center', transform=ccrs.PlateCarree())
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Reading the data from a buoy
-
 # Desired year (four digit)
 year = date[0:4]
 # Desired month (two digit)
 month = date[4:6]
 # Desired day (two digit)
 day = date[6:8] 
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Read the buoy data
 buoy = Dataset('http://goosbrasil.org:8080/pirata/B20n38w.nc')
 
 # Read the 'time' dataset
 time = buoy.variables['time'][:]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Calculate how many days passed since 0001-01-01
 from datetime import date
 d0 = date(1, 1, 1)
 d1 = date(int(year), int(month), int(day))
 delta = d1 - d0
 delta_days = delta.days + 0.5
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Get the array index for the desired date
 index = np.where(time == delta_days)
 
@@ -164,9 +148,7 @@ index = np.where(time == delta_days)
 temp_buoy = buoy.variables['temperature'][index[0],0][0].round(2)
 lon_buoy  = buoy.variables['longitude'][index[0]] - 360
 lat_buoy  = buoy.variables['latitude'][index[0]]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Reading the data from a coordinate (satellite)
 lat_point = lat_buoy[0]
 lon_point = lon_buoy[0]
@@ -176,9 +158,7 @@ lon_idx = np.argmin(np.abs(lons - lon_point))
 
 temp_sat = file.variables['analysed_sst'][ 0 , lat_idx , lon_idx ].round(2)
 delta = temp_sat - temp_buoy
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Adding Annotations
 # Add a circle
 ax.plot(lon_point, lat_point, 'o', color='red', markersize=4, transform=ccrs.Geodetic(), markeredgewidth=1.0, markeredgecolor=(0, 0, 0, 1))
@@ -187,26 +167,20 @@ txt_offset_x = 0.8
 txt_offset_y = 0.8
 text = "Lat: " + str(lat_point.round(2)) + "\n" + "Lon: " + str(lon_point.round(2)) + "\n" + "Satellite: " + str(temp_sat) + " °C" + "\n" + "Buoy: " + str(temp_buoy) + " °C" + "\n" + "\u0394 = "  + str(delta.round(4)) + " °C"
 plt.annotate(text, xy=(int(lon_point + txt_offset_x), int(lat_point + txt_offset_y)), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Read the buoy data
 buoy = Dataset('http://goosbrasil.org:8080/pirata/B21n23w.nc')
 
 # Read the 'time' dataset
 time = buoy.variables['time'][:]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Calculate how many days passed since 0001-01-01
 from datetime import date
 d0 = date(1, 1, 1)
 d1 = date(int(year), int(month), int(day))
 delta = d1 - d0
 delta_days = delta.days + 0.5
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Get the array index for the desired date
 index = np.where(time == delta_days)
 
@@ -214,9 +188,7 @@ index = np.where(time == delta_days)
 temp_buoy = buoy.variables['temperature'][index[0],0][0].round(2)
 lon_buoy  = buoy.variables['longitude'][index[0]] - 360
 lat_buoy  = buoy.variables['latitude'][index[0]]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Reading the data from a coordinate (satellite)
 lat_point = lat_buoy[0]
 lon_point = lon_buoy[0]
@@ -226,9 +198,7 @@ lon_idx = np.argmin(np.abs(lons - lon_point))
 
 temp_sat = file.variables['analysed_sst'][ 0 , lat_idx , lon_idx ].round(2)
 delta = temp_sat - temp_buoy
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Adding Annotations
 # Add a circle
 ax.plot(lon_point, lat_point, 'o', color='red', markersize=4, transform=ccrs.Geodetic(), markeredgewidth=1.0, markeredgecolor=(0, 0, 0, 1))
@@ -237,26 +207,20 @@ txt_offset_x = 0.8
 txt_offset_y = 0.8
 text = "Lat: " + str(lat_point.round(2)) + "\n" + "Lon: " + str(lon_point.round(2)) + "\n" + "Satellite: " + str(temp_sat) + " °C" + "\n" + "Buoy: " + str(temp_buoy) + " °C" + "\n" + "\u0394 = "  + str(delta.round(4)) + " °C"
 plt.annotate(text, xy=(int(lon_point + txt_offset_x), int(lat_point + txt_offset_y)), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Read the buoy data
 buoy = Dataset('http://goosbrasil.org:8080/pirata/B12n23w.nc')
 
 # Read the 'time' dataset
 time = buoy.variables['time'][:]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Calculate how many days passed since 0001-01-01
 from datetime import date
 d0 = date(1, 1, 1)
 d1 = date(int(year), int(month), int(day))
 delta = d1 - d0
 delta_days = delta.days + 0.5
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Get the array index for the desired date
 index = np.where(time == delta_days)
 
@@ -264,9 +228,7 @@ index = np.where(time == delta_days)
 temp_buoy = buoy.variables['temperature'][index[0],0][0].round(2)
 lon_buoy  = buoy.variables['longitude'][index[0]] - 360
 lat_buoy  = buoy.variables['latitude'][index[0]]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Reading the data from a coordinate (satellite)
 lat_point = lat_buoy[0]
 lon_point = lon_buoy[0]
@@ -276,9 +238,7 @@ lon_idx = np.argmin(np.abs(lons - lon_point))
 
 temp_sat = file.variables['analysed_sst'][ 0 , lat_idx , lon_idx ].round(2)
 delta = temp_sat - temp_buoy
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Adding Annotations
 # Add a circle
 ax.plot(lon_point, lat_point, 'o', color='red', markersize=4, transform=ccrs.Geodetic(), markeredgewidth=1.0, markeredgecolor=(0, 0, 0, 1))
@@ -287,7 +247,6 @@ txt_offset_x = 0.8
 txt_offset_y = 0.8
 text = "Lat: " + str(lat_point.round(2)) + "\n" + "Lon: " + str(lon_point.round(2)) + "\n" + "Satellite: " + str(temp_sat) + " °C" + "\n" + "Buoy: " + str(temp_buoy) + " °C" + "\n" + "\u0394 = "  + str(delta.round(4)) + " °C"
 plt.annotate(text, xy=(int(lon_point + txt_offset_x), int(lat_point + txt_offset_y)), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig('Output/image_25.png')

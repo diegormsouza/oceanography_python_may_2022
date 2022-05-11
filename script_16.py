@@ -107,7 +107,6 @@ plt.title('Region: ' + str(extent), fontsize=7, loc='right')
 from matplotlib.offsetbox import AnchoredText
 text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
 ax.add_artist(text)
-
 #--------------------------------------------------------------------------------------------------------------------------- 
 # Save the image
 plt.savefig('Output/image_16.png')

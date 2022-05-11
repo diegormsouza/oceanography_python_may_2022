@@ -17,7 +17,6 @@ from utilities_goes import reproject                # Our function for reproject
 from utilities_goes import loadCPT                  # Import the CPT convert function
 gdal.PushErrorHandler('CPLQuietErrorHandler')       # Ignore GDAL warnings
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 extent = [-93.0, -60.00, -25.00, 18.00] 
 
@@ -28,12 +27,9 @@ output = "Output"; os.makedirs(output, exist_ok=True)
 # Datetime to process (today in this example, to match the GFS date)
 date = datetime.today().strftime('%Y%m%d')
 yyyymmddhhmn = date + '0000'
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Download the ABI file
 file_ir = download_CMI(yyyymmddhhmn, 13, input)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Variable
 var = 'CMI'
@@ -64,7 +60,6 @@ file = Dataset(filename_ret)
 # Get the pixel values
 data = file.variables['Band1'][:]
 #--------------------------------------------------------------------------------------------------------------------------- 
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(8,8))
 
@@ -102,7 +97,6 @@ date_formatted = date.strftime('%Y-%m-%d %H:%M')
 # Add a title
 plt.title(f'GOES-16 Band 13 - {date_formatted} UTC', fontweight='bold', fontsize=7, loc='left')
 plt.title('Reg.: ' + str(extent) , fontsize=7, loc='right')
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig(f'{output}/image_24.png', bbox_inches='tight', pad_inches=0, dpi=300)

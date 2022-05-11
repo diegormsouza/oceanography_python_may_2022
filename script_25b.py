@@ -34,13 +34,10 @@ date = '20210628' # YYYYMMDD
 # Download the file (product, date, directory)
 file = download_OCEAN('ASC-B-d-hdf', date, input)
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Open the file using the PyHDF library
 file = f'{input}/{file}'
 hdf = SD(file, SDC.READ)
-
 #---------------------------------------------------------------------------------------------------------------------------    
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 #extent = [-93.0, -60.00, -25.00, 18.00] # South America
 extent = [-70.0, -50.00, -30.00, -20.00] # Brazilian Southeast
@@ -103,21 +100,16 @@ if (orbit == 'a'):
   orbit = "Ascending"
 if (orbit == 'd'):
   orbit = "Descending"
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Input and output directories
 input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
 
 # Datetime to process 
 yyyymmddhhmn = date + '1250' 
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Download the ABI file
 file_ir = download_CMI(yyyymmddhhmn, 13, input)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Variable
 var = 'CMI'
@@ -148,7 +140,6 @@ file = Dataset(filename_ret)
 # Get the pixel values
 data = file.variables['Band1'][:]
 #--------------------------------------------------------------------------------------------------------------------------- 
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(8,7))
 
@@ -217,7 +208,6 @@ date_formatted = date.strftime('%Y-%m-%d %H:%M')
 # Add a title
 plt.title(f'GOES-16 + ASCAT Vector Winds [{satellite} - {orbit}] - {date_formatted} UTC', fontweight='bold', fontsize=7, loc='left')
 plt.title('Region: ' + str(extent), fontsize=7, loc='right')
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig(f'{output}/image_25.png', bbox_inches='tight', pad_inches=0, dpi=300)

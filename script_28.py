@@ -20,9 +20,7 @@ import pandas as pd                        # Read and manipulate a CSV file
 #---------------------------------------------------------------------------------------------------------------------------
 
 def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
-
   # Reading the data from a buoy
-
   # Desired year (four digit)
   year = year
   # Desired month (two digit)
@@ -37,18 +35,14 @@ def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
 
   # Read the 'time' dataset
   time = buoy.variables['time'][:]
-
   #---------------------------------------------------------------------------------------------------------------------------
-
   # Calculate how many days passed since 0001-01-01
   from datetime import date
   d0 = date(1, 1, 1)
   d1 = date(int(year), int(month), int(day))
   delta = d1 - d0
   delta_days = delta.days + 0.5
-
   #---------------------------------------------------------------------------------------------------------------------------
-
   # Get the array index for the desired date
   index = np.where(time == delta_days)
 
@@ -65,9 +59,7 @@ def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
   except:
     print("Bóia " + buoy_name + " sem dados para esta data.")
     return
-
   #---------------------------------------------------------------------------------------------------------------------------
-
   # Reading the data from a coordinate (satellite)
   lat_point = lat_buoy[0]
   lon_point = lon_buoy[0]
@@ -83,7 +75,6 @@ def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
   lons_list.append(lon_point)
   sate_list.append(temp_sat)
   buoy_list.append(temp_buoy)
-  
   #---------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------
 # Input and output directories
@@ -92,23 +83,17 @@ output = "/content/Output"; os.makedirs(output, exist_ok=True)
 
 # Time / Date for download
 date = '20220409' # YYYYMMDD
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Download the file (product, date, directory)
 file = download_OCEAN('SST', date, input)
 
 # Open the file using the NetCDF4 library
 file = Dataset(f'{input}/{file}')
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Reading lats and lons 
 lats = file.variables['lat'][:]
 lons = file.variables['lon'][:]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Get the year, month and day
 year = date[0:4]
 month = date[4:6]
@@ -136,9 +121,7 @@ plot_PIRATA('B5s10w',  -5, -10, year, month, day)
 plot_PIRATA('B6s10w',  -6, -10, year, month, day)
 plot_PIRATA('B10s10w',-10, -10, year, month, day)
 plot_PIRATA('B0n0e',    0,   0, year, month, day)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Create a table with Pandas
 tab_tsm = pd.DataFrame(columns=["LON","LAT","BÓIA","SATÉLITE"])
 
@@ -148,9 +131,7 @@ for idx in range(len(buoy_list)):
   tab_tsm.loc[idx,"LAT"] = lats_list[idx]
   tab_tsm.loc[idx,"BÓIA"] = buoy_list[idx]
   tab_tsm.loc[idx,"SATÉLITE"] = sate_list[idx]
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Choose the plot size (width x height, in inches)
 fig, ax = plt.subplots(figsize=(16, 8))
 
@@ -174,9 +155,7 @@ ax.plot([20, 30], [20, 30], ls="--", c="r")
 # Add grids
 plt.grid(axis='x', color='0.95')
 plt.grid(axis='y', color='0.95')
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Calculate the R²
 from sklearn.metrics import r2_score
 r_score = r2_score(buoy_list, sate_list).round(3)
@@ -192,9 +171,7 @@ bias = np.mean(np.subtract(array1, array2)).round(3)
 
 # Add an anotation with R², RMSE and Bias 
 plt.annotate(f'R² = {r_score}\nRMSE = {mean_squared_error} °C\nBIAS = {bias} °C', xy=(0.01, 0.88), xycoords = ax.transAxes, fontsize=14, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Save the figure
 plt.savefig(f'{output}/Image_28.png', bbox_inches='tight', pad_inches=0, dpi=300)
 

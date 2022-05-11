@@ -82,21 +82,16 @@ if (satellite == '3'):
 
 # Read the orbit
 orbit = getattr(file, 'cw:orbit_type').capitalize()
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Input and output directories
 input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
 
 # Datetime to process 
 yyyymmddhhmn = date + '1250'
-
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Download the ABI file
 file_ir = download_CMI(yyyymmddhhmn, 13, input)
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Variable
 var = 'CMI'
@@ -127,7 +122,6 @@ file = Dataset(filename_ret)
 # Get the pixel values
 data = file.variables['Band1'][:]
 #--------------------------------------------------------------------------------------------------------------------------- 
-
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(8,7))
 
@@ -175,7 +169,6 @@ plt.colorbar(img2, label='Wind Speed (kt)', extend='neither', orientation='horiz
 # Add a title
 plt.title(f'GOES-16 + ASCAT Vector Winds [{satellite} - {orbit}] - {date_formatted} UTC', fontweight='bold', fontsize=7, loc='left')
 plt.title('Region: ' + str(extent), fontsize=7, loc='right')
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
 plt.savefig(f'{output}/image_25.png', bbox_inches='tight', pad_inches=0, dpi=300)

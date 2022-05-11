@@ -30,7 +30,6 @@ file = download_OCEAN('CLO', date, input)
 # Open the file using the NetCDF4 library
 file = Dataset(f'{input}/{file}')
 #---------------------------------------------------------------------------------------------------------------------------
-
 # Select the extent [min. lon, min. lat, max. lon, max. lat]
 extent = [-93.0, -56.00, -25.00, 18.00] # South America
 
@@ -48,7 +47,6 @@ lonui = np.argmin( np.abs( lons - extent[2] ) )
  
 # Extract the Chlorophyll Concentration
 data = file.variables['chlor_a'][ 0 , 0 , latui:latli , lonli:lonui ]
-
 #---------------------------------------------------------------------------------------------------------------------------
 # Choose the plot size (width x height, in inches)
 plt.figure(figsize=(9,9))
