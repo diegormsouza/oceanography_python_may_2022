@@ -24,7 +24,7 @@ output = "Output"; os.makedirs(output, exist_ok=True)
 # Time / Date for download
 year = '2021'    # Year
 month_ini = 1    # Starting month
-month_end = 3   # End month
+month_end = 3    # End month
 month_int = 1    # Interval
 
 # Create the lists that will store our data
