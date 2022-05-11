@@ -173,7 +173,7 @@ ax.add_artist(text)
 
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
-plt.savefig('Output/image_22.png')
+plt.savefig('Output/image_23b.png')
 
 # Show the image
 plt.show()

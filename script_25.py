@@ -170,7 +170,7 @@ date = (datetime.strptime(dtime, '%Y-%m-%dT%H:%M:%S.%fZ'))
 date_formatted = date.strftime('%Y-%m-%d %H:%M') 
 
 # Add a colorbar
-plt.colorbar(img2, label='Wind Speed (kt)', extend='neither', orientation='horizontal', norm=norm, boundaries=bounds, ticks=bounds, pad=0.02, fraction=0.05)
+plt.colorbar(img2, label='Wind Speed (kt)', extend='neither', orientation='horizontal', norm=norm, boundaries=bounds, ticks=bounds, pad=0.05, fraction=0.05)
 
 # Add a title
 plt.title(f'GOES-16 + ASCAT Vector Winds [{satellite} - {orbit}] - {date_formatted} UTC', fontweight='bold', fontsize=7, loc='left')

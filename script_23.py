@@ -93,11 +93,10 @@ ax.add_feature(cfeature.OCEAN, facecolor='black')
 # Plot the image
 bounds = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
-#img = ax.barbs(lons[::2], lats[::2], u_wind[::2,::2], v_wind[::2,::2], wspeed[::2,::2], cmap=cmap, norm=norm, length = 5.0, sizes = dict(emptybarb=0.0, spacing=0.2, height=0.5), linewidth=1.0, pivot='middle') #, barbcolor='gray'
 img = ax.quiver(lons[::2], lats[::2], u_wind[::2,::2], v_wind[::2,::2], wspeed[::2,::2], cmap=cmap, norm=norm, scale = 450, width = 0.0025) 
 
 # Plot the legend
-qk = ax.quiverkey(img, 0.55, 0.895, 6, '20 kt', labelpos='E', coordinates='figure')
+qk = ax.quiverkey(img, 0.58, 0.895, 20, '20 kt', labelpos='E', coordinates='figure', fontproperties={'size': '7'})
 
 # Add a shapefile
 shapefile = list(shpreader.Reader('ne_10m_admin_1_states_provinces.shp').geometries())
@@ -134,7 +133,7 @@ ax.add_artist(text)
 
 #---------------------------------------------------------------------------------------------------------------------------
 # Save the image
-plt.savefig('Output/image_22.png')
+plt.savefig('Output/image_23.png')
 
 # Show the image
 plt.show() 

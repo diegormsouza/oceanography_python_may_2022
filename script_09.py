@@ -618,7 +618,6 @@ ax.plot(lon_point, lat_point, 'o', color='red', markersize=5, transform=ccrs.Geo
 txt_offset_x = 0.8
 txt_offset_y = 0.8
 plt.annotate("Lat: " + str(lat_point) + "\n" + "Lon: " + str(lon_point) + "\n" + "SST: \n" + str(data_point) + ' °C', xy=(lon_point + txt_offset_x, lat_point + txt_offset_y), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
-
 #--------------------------------------------------------------------------------------------------------------------------- 
 # Save the image
 plt.savefig('Output/image_09.png')
