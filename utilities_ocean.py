@@ -333,6 +333,20 @@ def download_OCEAN(product, date, path_dest):
       extension = '.hdf'
       file_name = naming_convention + year + jday + 'Aas_WW' + extension
 
+  elif (product == 'ASC-A-d-hdf'):
+      # Converting date to julian day
+      import datetime
+      fmt = '%Y%m%d'
+      s = year + month + day
+      dt = datetime.datetime.strptime(s, fmt)
+      tt = dt.timetuple()
+      jday = str(tt.tm_yday).zfill(3)
+      # FTP Path
+      path = ('pub/socd1/coastwatch/products/ascat/4hr/hdf/')
+      naming_convention = 'AS'
+      extension = '.hdf'
+      file_name = naming_convention + year + jday + 'Ads_WW' + extension
+
   elif (product == 'ASC-B-a-hdf'):
       # Converting date to julian day
       import datetime
