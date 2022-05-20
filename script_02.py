@@ -5,7 +5,7 @@
 # Required modules
 from netCDF4 import Dataset               # Read / Write NetCDF4 files
 import matplotlib.pyplot as plt           # Plotting library
-from datetime import datetime, timedelta  # Library to convert julian day to dd-mm-yyyy
+from datetime import datetime, timedelta  # Basic date and time types
 #---------------------------------------------------------------------------------------------------------------------------
 # Open the file using the NetCDF4 library
 file = Dataset("coraltemp_v3.1_20220101.nc")

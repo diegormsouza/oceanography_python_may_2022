@@ -5,7 +5,7 @@
 # Required modules
 from netCDF4 import Dataset                # Read / Write NetCDF4 files
 import matplotlib.pyplot as plt            # Plotting library
-from datetime import datetime, timedelta   # Library to convert julian day to dd-mm-yyyy
+from datetime import datetime, timedelta   # Basic date and time types
 import cartopy, cartopy.crs as ccrs        # Plot maps
 import cartopy.feature as cfeature         # Common drawing and filtering operations
 import cartopy.io.shapereader as shpreader # Import shapefiles
@@ -36,40 +36,32 @@ hdf = SD(file, SDC.READ)
 extent = [-93.0, -60.00, -25.00, 18.00] # South America
 
 # Reading lats and lons 
-sds_obj = hdf.select('latitude') 
-lats = sds_obj.get() 
-sds_obj = hdf.select('longitude') 
-lons = sds_obj.get() 
+lats = hdf.select('latitude').get() 
+lons = hdf.select('longitude').get() 
 
 # Getting the lat lon indexes
 lats_idx0, lats_idx1 = np.where((lats >= extent[1]) & (lats <= extent[3]))
 lons_idx0, lons_idx1 = np.where((lons >= extent[0]) & (lons <= extent[2]))
-latli = lats_idx0.min()
-latui = lats_idx0.max()
-lonli = lons_idx1.min()
-lonui = lons_idx1.max()
+latli = lats_idx0.min(); latui = lats_idx0.max(); lonli = lons_idx1.min(); lonui = lons_idx1.max()
 
 # Extract the lats and lons again
 lats = lats[ latli:latui , lonli:lonui ]
 lons = lons[ latli:latui , lonli:lonui ]
 
 # Extract the U Wind
-sds_obj = hdf.select('u_wind') 
-u_wind = sds_obj.get() 
+u_wind = hdf.select('u_wind').get() 
 u_wind = u_wind[ latli:latui , lonli:lonui ].astype(float) 
 u_wind[u_wind == -9999] = np.nan
 u_wind = u_wind * 0.01
 
 # Extract the U Wind
-sds_obj = hdf.select('v_wind') 
-v_wind = sds_obj.get() 
+v_wind = hdf.select('v_wind').get() 
 v_wind = v_wind[ latli:latui , lonli:lonui ].astype(float)  
 v_wind[v_wind == -9999] = np.nan
 v_wind = v_wind * 0.01
 
 # Extract the wind speed
-sds_obj = hdf.select('windspeed') 
-wspeed = sds_obj.get() 
+wspeed = hdf.select('windspeed').get() 
 wspeed = wspeed[ latli:latui , lonli:lonui ].astype(float)  
 wspeed[wspeed == -9999] = np.nan
 wspeed = wspeed * 0.01
@@ -108,13 +100,11 @@ norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
 img = ax.barbs(lons[::2,::2], lats[::2,::2], u_wind[::2,::2], v_wind[::2,::2], wspeed[::2,::2], cmap=cmap, norm=norm, length = 3.0, sizes = dict(emptybarb=0.0, spacing=0.2, height=0.5), linewidth=0.5, pivot='middle')
 
 # Getting the file time and date
-sds_obj = hdf.select('cwdate') 
-add_days = sds_obj.get().min() 
+add_days = hdf.select('cwdate').get().min() 
 day = datetime(1970,1,1,0) + timedelta(days=int(add_days))
 
 # Extract the time for each point
-sds_obj = hdf.select('cwtime') 
-cwtime = sds_obj.get() 
+cwtime = hdf.select('cwtime').get() 
 cwtime = cwtime[ latli:latui , lonli:lonui ].astype(float) 
 cwtime[cwtime == -2147483647] = np.nan
 cwtime = cwtime[::50,::20]
@@ -125,7 +115,6 @@ for (j,i),label in np.ndenumerate(cwtime):
     if (label > -9999):    
       date = day + timedelta(seconds=int(label))
       date_formatted = date.strftime('%H:%M')
-      #ax.text(lons_text[j][i], lats_text[j][i],date_formatted,ha='center',va='center', color='white', fontsize=12, fontweight='bold', transform=ccrs.Geodetic())
       plt.annotate(date_formatted, xy=(lons_text[j][i], lats_text[j][i]), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='white', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0, clip_on=True, annotation_clip=True)
 
 # Add a shapefile
@@ -143,6 +132,8 @@ date_formatted = date.strftime('%Y-%m-%d')
 
 # Read the satellite
 satellite = file[-10:-9]
+if (satellite == 'A'):
+  satellite = "METOP-A"
 if (satellite == 'B'):
   satellite = "METOP-B"
 if (satellite == 'C'):

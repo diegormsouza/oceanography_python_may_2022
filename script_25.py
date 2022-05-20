@@ -6,7 +6,7 @@
 # Required modules
 from netCDF4 import Dataset                   # Read / Write NetCDF4 files
 import matplotlib.pyplot as plt               # Plotting library
-from datetime import datetime, timedelta      # Library to convert julian day to dd-mm-yyyy
+from datetime import datetime, timedelta      # Basic date and time types
 import cartopy, cartopy.crs as ccrs           # Plot maps
 import cartopy.feature as cfeature            # Common drawing and filtering operations
 import cartopy.io.shapereader as shpreader    # Import shapefiles
