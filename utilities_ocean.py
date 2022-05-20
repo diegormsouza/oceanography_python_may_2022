@@ -92,7 +92,7 @@ def download_OCEAN(product, date, path_dest):
   # 'DHW-Monthly-Max', 'DHW-Annual-Max'
   # 'SST-LEO'
   # 'ASC-A-a-nc', 'ASC-A-d-nc', 'ASC-B-a-nc, 'ASC-A-d-nc' (ASCAT Winds)
-  # 'ASC-A-a-hdf', 'ASC-A-d-hdf', 'ASC-B-a-hdf, 'ASC-A-d-hdf' (ASCAT Winds)
+  # 'ASC-A-a-hdf', 'ASC-A-d-hdf', 'ASC-B-a-hdf, 'ASC-B-d-hdf', 'ASC-C-a-hdf, 'ASC-C-d-hdf' (ASCAT Winds)
   
   # Desired year (four digit)
   year = date[0:4]
@@ -118,8 +118,7 @@ def download_OCEAN(product, date, path_dest):
       product == 'BHS-Monthly-Max' or product == 'BHS-Annual-Max' or 
       product == 'DHW-Monthly-Max' or product == 'DHW-Annual-Max'):
     ftp = FTP('ftp.star.nesdis.noaa.gov') 
-  elif (product == 'ASC-B-a-nc' or 'ASC-B-d-nc' or 'ASC-C-a-nc' or 'ASC-C-d-nc' or product == 'SLA' or product == 'JAS' or product == 'SST-LEO' or
-        product == 'ASC-B-a-hdf' or 'ASC-B-d-hdf' or 'ASC-C-a-hdf' or 'ASC-C-d-hdf'):
+  elif (product == 'ASC-A-a-nc' or 'ASC-A-a-nc' or 'ASC-B-a-nc' or 'ASC-B-d-nc' or 'ASC-C-a-nc' or 'ASC-C-d-nc' or product == 'SLA' or product == 'JAS' or product == 'SST-LEO'):
     ftp = FTP('ftpcoastwatch.noaa.gov') 
 
   # FTP Credentials 
@@ -321,7 +320,7 @@ def download_OCEAN(product, date, path_dest):
       date_2 = datetime.strptime(date_2, '%Y-%m-%d %H:%M:%S').strftime('%Y%m%d')   
       file_name = naming_convention + '_' + date_1 + '_' + date_2 + '_' + '001' + extension
 
-  elif (product == 'ASC-B-a-nc'):
+  elif (product == 'ASC-A-a-hdf'):
       # Converting date to julian day
       import datetime
       fmt = '%Y%m%d'
@@ -330,53 +329,11 @@ def download_OCEAN(product, date, path_dest):
       tt = dt.timetuple()
       jday = str(tt.tm_yday).zfill(3)
       # FTP Path
-      path = ('pub/socd7/coastwatch/metop/ascat/netcdf/day/')
+      path = ('pub/socd1/coastwatch/products/ascat/4hr/hdf/')
       naming_convention = 'AS'
-      extension = '.nc'
-      file_name = naming_convention + year + jday + 'Bas_WW' + extension
+      extension = '.hdf'
+      file_name = naming_convention + year + jday + 'Aas_WW' + extension
 
-  elif (product == 'ASC-B-d-nc'):
-      # Converting date to julian day
-      import datetime
-      fmt = '%Y%m%d'
-      s = year + month + day
-      dt = datetime.datetime.strptime(s, fmt)
-      tt = dt.timetuple()
-      jday = str(tt.tm_yday).zfill(3)
-      # FTP Path
-      path = ('pub/socd7/coastwatch/metop/ascat/netcdf/day/')
-      naming_convention = 'AS'
-      extension = '.nc'
-      file_name = naming_convention + year + jday + 'Bds_WW' + extension
-
-  elif (product == 'ASC-C-a-nc'):
-      # Converting date to julian day
-      import datetime
-      fmt = '%Y%m%d'
-      s = year + month + day
-      dt = datetime.datetime.strptime(s, fmt)
-      tt = dt.timetuple()
-      jday = str(tt.tm_yday).zfill(3)
-      # FTP Path
-      path = ('pub/socd7/coastwatch/metop/ascat/netcdf/day/')
-      naming_convention = 'AS'
-      extension = '.nc'
-      file_name = naming_convention + year + jday + 'Cas_WW' + extension
-
-  elif (product == 'ASC-C-d-nc'):
-      # Converting date to julian day
-      import datetime
-      fmt = '%Y%m%d'
-      s = year + month + day
-      dt = datetime.datetime.strptime(s, fmt)
-      tt = dt.timetuple()
-      jday = str(tt.tm_yday).zfill(3)
-      # FTP Path
-      path = ('pub/socd7/coastwatch/metop/ascat/netcdf/day/')
-      naming_convention = 'AS'
-      extension = '.nc'
-      file_name = naming_convention + year + jday + 'Cds_WW' + extension
-      
   elif (product == 'ASC-B-a-hdf'):
       # Converting date to julian day
       import datetime
