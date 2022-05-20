@@ -117,7 +117,7 @@ def download_OCEAN(product, date, path_dest):
       product == 'BHS-Monthly-Max' or product == 'BHS-Annual-Max' or 
       product == 'DHW-Monthly-Max' or product == 'DHW-Annual-Max'):
     ftp = FTP('ftp.star.nesdis.noaa.gov') 
-  elif (product == 'ASC-A-a-hdf' or 'ASC-A-a-hdf' or 'ASC-B-a-hdf' or 'ASC-B-d-hdf' or 'ASC-C-a-hdf' or 'ASC-C-d-hdf' or product == 'SLA' or product == 'JAS' or product == 'SST-LEO'):
+  elif (product == 'ASC-A-a-hdf' or 'ASC-A-d-hdf' or 'ASC-B-a-hdf' or 'ASC-B-d-hdf' or 'ASC-C-a-hdf' or 'ASC-C-d-hdf' or product == 'SLA' or product == 'JAS' or product == 'SST-LEO'):
     ftp = FTP('ftpcoastwatch.noaa.gov')
 
   # FTP Credentials 
