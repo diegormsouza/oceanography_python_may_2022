@@ -22,7 +22,7 @@ input = "Samples"; os.makedirs(input, exist_ok=True)
 output = "Output"; os.makedirs(output, exist_ok=True)
 
 # Time / Date for download
-date = '20220412' # YYYYMMDD
+date = '20220101' # YYYYMMDD
 
 # Download the file (product, date, directory)
 file = download_OCEAN('CLO', date, input)
@@ -72,7 +72,7 @@ cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
 cmap.set_over('#b46464')
 cmap.set_under('#84007c')
 vmin = 0.01
-vmax = 65.00
+vmax = 67.00
 
 # Add a land mask
 ax.add_feature(cfeature.LAND)
@@ -87,7 +87,11 @@ shapefile = list(shpreader.Reader('ne_10m_admin_1_states_provinces.shp').geometr
 ax.add_geometries(shapefile, ccrs.PlateCarree(), edgecolor='gray',facecolor='none', linewidth=0.3)
 
 # Add a colorbar
-plt.colorbar(img, label='Chlorophyll-a (mg/m³)', extend='both', orientation='vertical', pad=0.02, fraction=0.05)
+cb = plt.colorbar(img, label='Chlorophyll-a (mg/m³)', extend='both', orientation='vertical', pad=0.02, fraction=0.05)
+ticks = [0.01, 0.1, 1, 10, 67]
+cb.set_ticks(ticks)
+cb.set_ticklabels([f"{t:g}" for t in ticks])
+cb.minorticks_on()
 
 # Getting the file time and date
 add_seconds = int(file.variables['time'][0])
