@@ -63,7 +63,7 @@ for month in range(month_ini, month_end + 1, month_int):
   # MEAN SST - MONTHLY
   #---------------------------------------------------------------------------------------------------------------------------
   # Download the file (product, date, directory)
-  file = download_OCEAN('SST-Monthly-Mean', date, input) # options: 'SST', 'SST-A' (Anomaly), 'SST-T' (Trend), 'CLO' (Ocean Color), 'SLA' (Sea Level Anomaly), 'ASC-A-a', ASC-A-d, ASC-B-a, ASC-B-d, (ASCAT Winds), 'JAS' (JASON-3)
+  file = download_OCEAN('SST-Monthly-Mean', date, input) 
   
   if os.path.exists(f'{input}/{file}'):
     # Open the file using the NetCDF4 library
@@ -86,7 +86,7 @@ for month in range(month_ini, month_end + 1, month_int):
   # MAX SST - MONTHLY
   #---------------------------------------------------------------------------------------------------------------------------
   # Download the file (product, date, directory)
-  file = download_OCEAN('SST-Monthly-Max', date, input) # options: 'SST', 'SST-A' (Anomaly), 'SST-T' (Trend), 'CLO' (Ocean Color), 'SLA' (Sea Level Anomaly), 'ASC-A-a', ASC-A-d, ASC-B-a, ASC-B-d, (ASCAT Winds), 'JAS' (JASON-3)
+  file = download_OCEAN('SST-Monthly-Max', date, input) 
   
   if os.path.exists(f'{input}/{file}'):
     # Open the file using the NetCDF4 library
