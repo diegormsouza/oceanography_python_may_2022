@@ -42,74 +42,77 @@ for month in range(month_ini, month_end + 1, month_int):
   # Download the file (product, date, directory)
   file = download_OCEAN('SST-Monthly-Min', date, input) 
   
-  # Open the file using the NetCDF4 library
-  file = Dataset(f'{input}/{file}')
+  if os.path.exists(f'{input}/{file}'):
+    # Open the file using the NetCDF4 library
+    file = Dataset(f'{input}/{file}')
+    
+    # Reading lats and lons 
+    lats = file.variables['lat'][:]
+    lons = file.variables['lon'][:]
 
-  # Reading lats and lons 
-  lats = file.variables['lat'][:]
-  lons = file.variables['lon'][:]
-  
-  # Reading the data from a coordinate
-  lat_point = -30
-  lon_point = -30
-  lat_idx = np.argmin(np.abs(lats - lat_point))
-  lon_idx = np.argmin(np.abs(lons - lon_point))
-  data_point = file.variables['sea_surface_temperature'][ 0 , lat_idx , lon_idx ].round(2)
-   
-  # Add the data to the list
-  data_min.append(data_point)
+    # Reading the data from a coordinate
+    lat_point = -30
+    lon_point = -30
+    lat_idx = np.argmin(np.abs(lats - lat_point))
+    lon_idx = np.argmin(np.abs(lons - lon_point))
+    data_point = file.variables['sea_surface_temperature'][ 0 , lat_idx , lon_idx ].round(2)
+    
+    # Add the data to the list
+    data_min.append(data_point)
 
   # MEAN SST - MONTHLY
   #---------------------------------------------------------------------------------------------------------------------------
   # Download the file (product, date, directory)
   file = download_OCEAN('SST-Monthly-Mean', date, input) # options: 'SST', 'SST-A' (Anomaly), 'SST-T' (Trend), 'CLO' (Ocean Color), 'SLA' (Sea Level Anomaly), 'ASC-A-a', ASC-A-d, ASC-B-a, ASC-B-d, (ASCAT Winds), 'JAS' (JASON-3)
   
-  # Open the file using the NetCDF4 library
-  file = Dataset(f'{input}/{file}')
+  if os.path.exists(f'{input}/{file}'):
+    # Open the file using the NetCDF4 library
+    file = Dataset(f'{input}/{file}')
 
-  # Reading lats and lons 
-  lats = file.variables['lat'][:]
-  lons = file.variables['lon'][:]
-  
-  # Reading the data from a coordinate
-  lat_point = -30
-  lon_point = -30
-  lat_idx = np.argmin(np.abs(lats - lat_point))
-  lon_idx = np.argmin(np.abs(lons - lon_point))
-  data_point = file.variables['sea_surface_temperature'][ 0 , lat_idx , lon_idx ].round(2)
+    # Reading lats and lons 
+    lats = file.variables['lat'][:]
+    lons = file.variables['lon'][:]
 
-  # Add the data to the list
-  data_mean.append(data_point)
+    # Reading the data from a coordinate
+    lat_point = -30
+    lon_point = -30
+    lat_idx = np.argmin(np.abs(lats - lat_point))
+    lon_idx = np.argmin(np.abs(lons - lon_point))
+    data_point = file.variables['sea_surface_temperature'][ 0 , lat_idx , lon_idx ].round(2)
+
+    # Add the data to the list
+    data_mean.append(data_point)
 
   # MAX SST - MONTHLY
   #---------------------------------------------------------------------------------------------------------------------------
   # Download the file (product, date, directory)
   file = download_OCEAN('SST-Monthly-Max', date, input) # options: 'SST', 'SST-A' (Anomaly), 'SST-T' (Trend), 'CLO' (Ocean Color), 'SLA' (Sea Level Anomaly), 'ASC-A-a', ASC-A-d, ASC-B-a, ASC-B-d, (ASCAT Winds), 'JAS' (JASON-3)
   
-  # Open the file using the NetCDF4 library
-  file = Dataset(f'{input}/{file}')
+  if os.path.exists(f'{input}/{file}'):
+    # Open the file using the NetCDF4 library
+    file = Dataset(f'{input}/{file}')
 
-  # Reading lats and lons 
-  lats = file.variables['lat'][:]
-  lons = file.variables['lon'][:]
-  
-  # Reading the data from a coordinate
-  lat_point = -30
-  lon_point = -30
-  lat_idx = np.argmin(np.abs(lats - lat_point))
-  lon_idx = np.argmin(np.abs(lons - lon_point))
-  data_point = file.variables['sea_surface_temperature'][ 0 , lat_idx , lon_idx ].round(2)
+    # Reading lats and lons 
+    lats = file.variables['lat'][:]
+    lons = file.variables['lon'][:]
 
-  # Add the data to the list
-  data_max.append(data_point)
-  #---------------------------------------------------------------------------------------------------------------------------
-  # Getting the file time and date 
-  add_seconds = int(file.variables['time'][0])
-  date = datetime(1981,1,1,0) + timedelta(seconds=add_seconds)
-  date_formatted = date.strftime('%Y-%m')
-  
-  # Add the date to the list
-  dates.append(date_formatted)
+    # Reading the data from a coordinate
+    lat_point = -30
+    lon_point = -30
+    lat_idx = np.argmin(np.abs(lats - lat_point))
+    lon_idx = np.argmin(np.abs(lons - lon_point))
+    data_point = file.variables['sea_surface_temperature'][ 0 , lat_idx , lon_idx ].round(2)
+
+    # Add the data to the list
+    data_max.append(data_point)
+
+    # Getting the file time and date 
+    add_seconds = int(file.variables['time'][0])
+    date = datetime(1981,1,1,0) + timedelta(seconds=add_seconds)
+    date_formatted = date.strftime('%Y-%m')
+    
+    # Add the date to the list
+    dates.append(date_formatted)
   #---------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------
 # Choose the plot size (width x height, in inches)
