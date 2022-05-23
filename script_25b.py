@@ -55,23 +55,30 @@ latli = lats_idx0.min(); latui = lats_idx0.max(); lonli = lons_idx1.min(); lonui
 lats = lats[ latli:latui , lonli:lonui ]
 lons = lons[ latli:latui , lonli:lonui ]
 
+# Extract the missing value and scale factor
+for key, value in hdf.select('u_wind').attributes().items():
+    if key == 'missing_value':
+        missing_value = value	
+    if key == 'scale_factor':
+        scale_factor = value
+
 # Extract the U Wind
 u_wind = hdf.select('u_wind').get() 
 u_wind = u_wind[ latli:latui , lonli:lonui ].astype(float) 
-u_wind[u_wind == -9999] = np.nan
-u_wind = u_wind * 0.01
+u_wind[u_wind == missing_value] = np.nan
+u_wind = u_wind * scale_factor
 
 # Extract the U Wind
 v_wind = hdf.select('v_wind').get() 
 v_wind = v_wind[ latli:latui , lonli:lonui ].astype(float)  
-v_wind[v_wind == -9999] = np.nan
-v_wind = v_wind * 0.01
+v_wind[v_wind == missing_value] = np.nan
+v_wind = v_wind * scale_factor
 
 # Extract the wind speed
 wspeed = hdf.select('windspeed').get() 
 wspeed = wspeed[ latli:latui , lonli:lonui ].astype(float)  
-wspeed[wspeed == -9999] = np.nan
-wspeed = wspeed * 0.01
+wspeed[wspeed == missing_value] = np.nan
+wspeed = wspeed * scale_factor
 
 # Getting the file time and date
 add_days = hdf.select('cwdate').get().min() 
