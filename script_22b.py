@@ -110,10 +110,15 @@ img = ax.barbs(lons[::2,::2], lats[::2,::2], u_wind[::2,::2], v_wind[::2,::2], w
 add_days = hdf.select('cwdate').get().min() 
 day = datetime(1970,1,1,0) + timedelta(days=int(add_days))
 
+# Extract the missing value and scale factor
+for key, value in hdf.select('cwtime').attributes().items():
+    if key == 'missing_value':
+        missing_value = value
+
 # Extract the time for each point
-cwtime = hdf.select('cwtime').get() 
+cwtime = hdf.select('cwtime') .get() 
 cwtime = cwtime[ latli:latui , lonli:lonui ].astype(float) 
-cwtime[cwtime == -2147483647] = np.nan
+cwtime[cwtime == missing_value] = np.nan
 cwtime = cwtime[::50,::20]
 lons_text = lons[::50,::20]
 lats_text = lats[::50,::20]
@@ -122,7 +127,9 @@ for (j,i),label in np.ndenumerate(cwtime):
     if (label > -9999):    
       date = day + timedelta(seconds=int(label))
       date_formatted = date.strftime('%H:%M')
-      plt.annotate(date_formatted, xy=(lons_text[j][i], lats_text[j][i]), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), fontsize=7, fontweight='bold', color='white', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0, clip_on=True, annotation_clip=True)
+      plt.annotate(date_formatted, xy=(lons_text[j][i], lats_text[j][i]), xycoords=ccrs.PlateCarree()._as_mpl_transform(ax), 
+      fontsize=7, fontweight='bold', color='white', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), 
+      alpha = 1.0, clip_on=True, annotation_clip=True)
 
 # Add a shapefile
 shapefile = list(shpreader.Reader('ne_10m_admin_1_states_provinces.shp').geometries())

@@ -177,14 +177,18 @@ img2 = ax.barbs(lons[::2, ::2], lats[::2, ::2], u_wind[::2,::2], v_wind[::2,::2]
 add_days = hdf.select('cwdate').get().min() 
 day = datetime(1970,1,1,0) + timedelta(days=int(add_days))
 
-# Extract the time for each point
+# Extract the missing value and scale factor
+for key, value in hdf.select('cwtime').attributes().items():
+    if key == 'missing_value':
+        missing_value = value
 
-cwtime = hdf.select('cwtime').get() 
+# Extract the time for each point
+cwtime = hdf.select('cwtime') .get() 
 cwtime = cwtime[ latli:latui , lonli:lonui ].astype(float) 
-cwtime[cwtime == -2147483647] = np.nan
-cwtime = cwtime[::40,::20]
-lons_text = lons[::40,::20]
-lats_text = lats[::40,::20]
+cwtime[cwtime == missing_value] = np.nan
+cwtime = cwtime[::50,::20]
+lons_text = lons[::50,::20]
+lats_text = lats[::50,::20]
 
 for (j,i),label in np.ndenumerate(cwtime):
     if (label > -9999):    
