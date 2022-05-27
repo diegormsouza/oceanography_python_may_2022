@@ -1,157 +1,177 @@
 #---------------------------------------------------------------------------------------------------------------------------
-# INPE / CGCT / DISSM - Training: Oceanography Products - Script 29: GOES-16 Level 2 Products (SST) and Average
+# INPE / CGCT / DISSM - Training: Oceanography Products - Script 29: Comparing Satellite and Buoys (Scatter)
 # Author: Diego Souza (INPE / CGCT / DISSM)
 #---------------------------------------------------------------------------------------------------------------------------
 # Required modules
-from netCDF4 import Dataset                     # Read / Write NetCDF4 files
-import matplotlib.pyplot as plt                 # Plotting library
-from datetime import datetime                   # Basic Dates and time types
+from netCDF4 import Dataset                # Read / Write NetCDF4 files
+import matplotlib.pyplot as plt            # Plotting library
+from datetime import datetime, timedelta   # Basic date and time types
 import cartopy, cartopy.crs as ccrs        # Plot maps
 import cartopy.feature as cfeature         # Common drawing and filtering operations
 import cartopy.io.shapereader as shpreader # Import shapefiles
-import os                                       # Miscellaneous operating system interfaces
-from osgeo import gdal                          # Python bindings for GDAL
-import numpy as np                              # Scientific computing with Python
-import matplotlib.colors                        # Matplotlib colors  
-from utilities_goes import download_PROD        # Our function for download
-from utilities_goes import reproject            # Our function for reproject
-gdal.PushErrorHandler('CPLQuietErrorHandler')   # Ignore GDAL warnings
-#-----------------------------------------------------------------------------------------------------------
+import numpy as np                         # Import the Numpy package
+import matplotlib.colors                   # Matplotlib colors  
+from datetime import datetime, timedelta   # Basic Dates and time types
+import os                                  # Miscellaneous operating system interfaces
+import time as t                           # Time access and conversion                                          
+from ftplib import FTP                     # FTP protocol client
+from utilities_ocean import download_OCEAN # Our function for download  
+import pandas as pd                        # Read and manipulate a CSV file               
+#---------------------------------------------------------------------------------------------------------------------------
+
+def plot_PIRATA(buoy_name, lat_nominal, lon_nominal, year, month, day):
+  # Reading the data from a buoy
+  # Desired year (four digit)
+  year = year
+  # Desired month (two digit)
+  month = month
+  # Desired day (two digit)
+  day = day
+  #---------------------------------------------------------------------------------------------------------------------------
+  # Read the buoy data
+  buoy = Dataset('http://goosbrasil.org:8080/pirata/' + buoy_name + '.nc')
+
+  # Read the 'time' dataset
+  time = buoy.variables['time'][:]
+  #---------------------------------------------------------------------------------------------------------------------------
+  # Calculate how many days passed since 0001-01-01
+  from datetime import date
+  d0 = datetime(1, 1, 1, 0)
+  d1 = datetime(int(year), int(month), int(day), 12)
+  delta = d1 - d0
+  delta_days = delta.total_seconds() / 86400
+  #---------------------------------------------------------------------------------------------------------------------------
+  # Get the array index for the desired date
+  index = np.where(time == delta_days)
+
+  lon_buoy  = buoy.variables['longitude'][index[0]] - 360
+  lat_buoy  = buoy.variables['latitude'][index[0]]
+
+  # Extract the 1 m temperature, lat and lon for the desired date
+  try:
+    temp_buoy = buoy.variables['temperature'][index[0],0][0].round(2)
+    
+    if (temp_buoy == -9999 or temp_buoy == -99999):
+      print("Boia " + buoy_name + " com dados inválidos para esta data.")
+      return
+  except:
+    print("Boia " + buoy_name + " sem dados para esta data.")
+    return
+  #---------------------------------------------------------------------------------------------------------------------------
+  # Reading the data from a coordinate (satellite)
+  lat_point = lat_buoy[0]
+  lon_point = lon_buoy[0]
+
+  lat_idx = np.argmin(np.abs(lats - lat_point))
+  lon_idx = np.argmin(np.abs(lons - lon_point))
+
+  temp_sat = file.variables['analysed_sst'][ 0 , lat_idx , lon_idx ].round(2)
+  delta = temp_sat - temp_buoy
+
+  # Append the parameters to the lists
+  lats_list.append(lat_point)
+  lons_list.append(lon_point)
+  sate_list.append(temp_sat)
+  buoy_list.append(temp_buoy)
+  #---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
 # Input and output directories
-input = "Samples"; os.makedirs(input, exist_ok=True)
-output = "Output"; os.makedirs(output, exist_ok=True)
+input = "/content/Samples"; os.makedirs(input, exist_ok=True)
+output = "/content/Output"; os.makedirs(output, exist_ok=True)
 
-# Parameters to process
-yyyymmdd = '20220101'
-product_name = 'ABI-L2-SSTF'
+# Time / Date for download
+date = '20220101' # YYYYMMDD
+#---------------------------------------------------------------------------------------------------------------------------
+# Download the file (product, date, directory)
+file = download_OCEAN('SST', date, input)
 
-# Desired extent
-extent = [-93.0, -60.00, -25.00, 18.00] # Min lon, Max lon, Min lat, Max lat
+# Open the file using the NetCDF4 library
+file = Dataset(f'{input}/{file}')
+#---------------------------------------------------------------------------------------------------------------------------
+# Reading lats and lons 
+lats = file.variables['lat'][:]
+lons = file.variables['lon'][:]
+#---------------------------------------------------------------------------------------------------------------------------
+# Get the year, month and day
+year = date[0:4]
+month = date[4:6]
+day = date[6:8]
 
-########################################################################
-# Sea Surface Temperature - "X" Hours
-########################################################################
+# Create the lists
+lats_list = []; lons_list = []; buoy_list = []; sate_list = []
 
-hour_ini = 0
-hour_end = 23
-hour_int = 1
+# Call the function to read the buoys and compare with the satellite data
+plot_PIRATA('B20n38w',  0, -38, year, month, day)
+plot_PIRATA('B15n38w', 15, -38, year, month, day)
+plot_PIRATA('B12n38w', 12, -38, year, month, day)
+plot_PIRATA('B8n38w',   8, -38, year, month, day)
+plot_PIRATA('B4n38w',   4, -38, year, month, day)
+plot_PIRATA('B0n35w',   0, -35, year, month, day)
+plot_PIRATA('B8s30w',  -8, -30, year, month, day)
+plot_PIRATA('B19s34w',-19, -34, year, month, day)
+plot_PIRATA('B21n23w', 21, -23, year, month, day)
+plot_PIRATA('B12n23w', 12, -23, year, month, day)
+plot_PIRATA('B4n23w',   4, -23, year, month, day)
+plot_PIRATA('B0n23w',   0, -23, year, month, day)
+plot_PIRATA('B2n10w',   2, -10, year, month, day)
+plot_PIRATA('B2s10w',  -2, -10, year, month, day)
+plot_PIRATA('B5s10w',  -5, -10, year, month, day)
+plot_PIRATA('B6s10w',  -6, -10, year, month, day)
+plot_PIRATA('B10s10w',-10, -10, year, month, day)
+plot_PIRATA('B0n0e',    0,   0, year, month, day)
+#---------------------------------------------------------------------------------------------------------------------------
+# Create a table with Pandas
+tab_tsm = pd.DataFrame(columns=["LON","LAT","BOIA","SATÉLITE"])
 
-sum_ds = np.zeros((5424,5424))
-count_ds = np.zeros((5424,5424))
-#-----------------------------------------------------------------------------------------------------------
-for hour in np.arange(hour_ini, hour_end+1, hour_int):
-
-    # Date structure
-    yyyymmddhhmn = f'{yyyymmdd}{hour:02.0f}00'
-
-    # Download the file
-    file_name = download_PROD(yyyymmddhhmn, product_name, input)
-    #-----------------------------------------------------------------------------------------------------------
-    # Variable
-    var = 'SST'
-
-    # Open the GOES-R image
-    file = Dataset(f'{input}/{file_name}.nc')        
-
-    # Open the file
-    img = gdal.Open(f'NETCDF:{input}/{file_name}.nc:' + var)
-
-    # Data Quality Flag (DQF)
-    dqf = gdal.Open(f'NETCDF:{input}/{file_name}.nc:DQF')
-
-    # Read the header metadata
-    metadata = img.GetMetadata()
-    scale = float(metadata.get(var + '#scale_factor'))
-    offset = float(metadata.get(var + '#add_offset'))
-    undef = float(metadata.get(var + '#_FillValue'))
-    dtime = metadata.get('NC_GLOBAL#time_coverage_start')
-
-    # Load the data
-    ds = img.ReadAsArray(0, 0, img.RasterXSize, img.RasterYSize).astype(float)
-    ds_dqf = dqf.ReadAsArray(0, 0, dqf.RasterXSize, dqf.RasterYSize).astype(float)
-
-    # Apply the scale, offset and convert to celsius
-    ds = (ds * scale + offset) - 273.15
-
-    # Apply NaN's where the quality flag is greater than 1
-    ds[ds_dqf > 1] = np.nan
-    
-    # Calculate the sum
-    sum_ds = np.nansum(np.dstack((sum_ds,ds)),2)
-    count_ds = np.nansum(np.dstack((count_ds,(ds/ds))),2)
-    #-----------------------------------------------------------------------------------------------------------
-    
-# Calculate the sum
-ds_day = np.empty((5424,5424))
-ds_day[::] = np.nan
-ds_day[count_ds!=0] = sum_ds[count_ds!=0]/count_ds[count_ds!=0]
-#-----------------------------------------------------------------------------------------------------------
-# Reproject the file
-filename_ds = f'{output}/{file_name}_ret.nc'
-reproject(filename_ds, img, ds_day, extent, undef)
-#-----------------------------------------------------------------------------------------------------------
-# Open the reprojected GOES-R image
-file = Dataset(filename_ds)
-
-# Get the pixel values
-data_geo = file.variables['Band1'][:]
-#-----------------------------------------------------------------------------------------------------------
+# Fill the table with the values
+for idx in range(len(buoy_list)):
+  tab_tsm.loc[idx,"LON"] = lons_list[idx]
+  tab_tsm.loc[idx,"LAT"] = lats_list[idx]
+  tab_tsm.loc[idx,"BOIA"] = buoy_list[idx]
+  tab_tsm.loc[idx,"SATÉLITE"] = sate_list[idx]
+#---------------------------------------------------------------------------------------------------------------------------
 # Choose the plot size (width x height, in inches)
-plt.figure(figsize=(9,9))
+fig, ax = plt.subplots(figsize=(16, 8))
 
-# Use the Cilindrical Equidistant projection in cartopy
-ax = plt.axes(projection=ccrs.PlateCarree())
-ax.set_extent([extent[0], extent[2], extent[1], extent[3]], ccrs.PlateCarree())
+# Plot title
+plt.title('Comparação: Boias x Satélite', fontsize=12, fontweight='bold')
 
-# Define the image extent
-img_extent = [extent[0], extent[2], extent[1], extent[3]]
+# Create the scatter plot
+ax.scatter(x = tab_tsm['BOIA'], y = tab_tsm['SATÉLITE'])
 
-# Add coastlines, borders and gridlines
-ax.coastlines(resolution='50m', color='black', linewidth=0.8)
-ax.add_feature(cartopy.feature.BORDERS, edgecolor='black', linewidth=0.5)
-gl = ax.gridlines(crs=ccrs.PlateCarree(), color='white', alpha=1.0, linestyle='--', linewidth=0.25, xlocs=np.arange(-180, 180, 10), ylocs=np.arange(-90, 90, 10), draw_labels=True)
-gl.top_labels = False
-gl.right_labels = False
+# X axis limits (°C) and label
+plt.xlim(20, 30)
+plt.xlabel("Boias (°C)",  fontsize=12, fontweight='bold')
 
-# Create a custom color scale:
-colors = ["#2d001c", "#5b0351", "#780777", "#480a5e", "#1e1552", 
-          "#1f337d", "#214c9f", "#2776c6", "#2fa5f1", "#1bad1d", 
-          "#8ad900", "#ffec00", "#ffab00", "#f46300", "#de3b00", 
-          "#ab1900", "#6b0200", '#3c0000']
-cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
-cmap.set_over('#3c0000')
-cmap.set_under('#28000a')
-vmin = -2.0
-vmax = 35.0
+# Y axis limits (°C) and label
+plt.ylim(20, 30)
+plt.ylabel("Satélite (°C)",  fontsize=12, fontweight='bold')
 
-# Add a background image
-ax.stock_img()
+# Create the reference line
+ax.plot([20, 30], [20, 30], ls="--", c="r")
 
-# Plot the image
-img = ax.imshow(data_geo, vmin=vmin, vmax=vmax, origin='upper', extent=img_extent, cmap=cmap)
-   
-# Add a shapefile
-shapefile = list(shpreader.Reader('ne_10m_admin_1_states_provinces.shp').geometries())
-ax.add_geometries(shapefile, ccrs.PlateCarree(), edgecolor='gray',facecolor='none', linewidth=0.3)
+# Add grids
+plt.grid(axis='x', color='0.95')
+plt.grid(axis='y', color='0.95')
+#---------------------------------------------------------------------------------------------------------------------------
+# Calculate the R²
+from sklearn.metrics import r2_score
+r_score = r2_score(buoy_list, sate_list).round(3)
 
-# Add a colorbar
-plt.colorbar(img, label='Sea Surface Temperature (°C)', extend='both', orientation='vertical', pad=0.02, fraction=0.05)
+# Calculate the RMSE
+from sklearn.metrics import mean_squared_error
+mean_squared_error = mean_squared_error(buoy_list, sate_list).round(3)
 
-# Extract date
-date = (datetime.strptime(dtime, '%Y-%m-%dT%H:%M:%S.%fZ'))
-date_formatted = date.strftime('%Y-%m-%d %H:%M')
+# Calculate the Bias
+array1 = np.array(buoy_list)
+array2 = np.array(sate_list)
+bias = np.mean(np.subtract(array1, array2)).round(3)
 
-# Add a title
-plt.title(f'GOES-16 SST {date_formatted} UTC', fontweight='bold', fontsize=7, loc='left')
-plt.title('Reg.: ' + str(extent) , fontsize=7, loc='right')
+# Add an anotation with R², RMSE and Bias 
+plt.annotate(f'R² = {r_score}\nRMSE = {mean_squared_error} °C\nBIAS = {bias} °C', xy=(0.01, 0.88), xycoords = ax.transAxes, fontsize=14, fontweight='bold', color='gold', bbox=dict(boxstyle="round",fc=(0.0, 0.0, 0.0, 0.5), ec=(1., 1., 1.)), alpha = 1.0)
+#---------------------------------------------------------------------------------------------------------------------------
+# Save the figure
+plt.savefig(f'{output}/Image_29.png', bbox_inches='tight', pad_inches=0, dpi=300)
 
-# Add a text inside the plot
-from matplotlib.offsetbox import AnchoredText
-text = AnchoredText("INPE / CGCT / DISSM", loc=4, prop={'size': 7}, frameon=True)
-ax.add_artist(text)
-#--------------------------------------------------------------------------------------------------------------------------- 
-# Save the image
-plt.savefig('Output/image_29.png')
-
-# Show the image
+# Show the plot
 plt.show()
