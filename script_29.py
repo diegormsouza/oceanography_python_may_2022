@@ -160,7 +160,7 @@ r_score = r2_score(buoy_list, sate_list).round(3)
 
 # Calculate the RMSE
 from sklearn.metrics import mean_squared_error
-mean_squared_error = mean_squared_error(buoy_list, sate_list).round(3)
+mean_squared_error = np.sqrt(mean_squared_error(buoy_list, sate_list)).round(3)
 
 # Calculate the Bias
 array1 = np.array(buoy_list)
