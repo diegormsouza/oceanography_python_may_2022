@@ -5,9 +5,11 @@ In this repository, you will find all the scripts used during the training.
 ![image](https://github.com/diegormsouza/oceanography_python_may_2022/assets/54595784/7b841525-c0c3-4fe9-b0da-b06f6444ab4d)
 
 Colab Notebook (Brazilian Portuguese): 
+
 https://colab.research.google.com/drive/1J7IP_xRb6JQmhg3CyT5T3WfuzqrQwR3b?usp=sharing
 
 Colab Notebook (English): 
+
 https://colab.research.google.com/drive/1c470R_ClKRibf8UM7wyRUqTFnEbgBGXD?usp=sharing
 
 - **Script 01:** Basic Plot
